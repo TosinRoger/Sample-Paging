@@ -1,7 +1,8 @@
-package br.com.tosin.samplepaging
+package br.com.tosin.samplepaging.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import br.com.tosin.samplepaging.R
 import br.com.tosin.samplepaging.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
