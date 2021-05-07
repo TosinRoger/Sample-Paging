@@ -7,10 +7,10 @@ object FactoryPerson {
 
     private const val itemsInPage = 10
 
-    fun createListPerson(page: Int): List<Person> {
+    fun createListPerson(page: Int? = 0): List<Person> {
         val list = mutableListOf<Person>()
 
-        val indexFirstItem = itemsInPage * page
+        val indexFirstItem = itemsInPage * page!!
 
         fullNameList.forEachIndexed { index, fullName ->
             if (index >= indexFirstItem && index < indexFirstItem + itemsInPage) {
