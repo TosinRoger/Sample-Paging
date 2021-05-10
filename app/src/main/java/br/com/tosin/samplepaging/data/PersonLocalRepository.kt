@@ -9,10 +9,19 @@ import kotlinx.coroutines.flow.Flow
 
 class PersonLocalRepository {
 
+    companion object {
+        const val PAGE_SIZE = 10
+    }
+
     fun fetchPersonByPage(): Flow<PagingData<Person>> {
         return Pager(
-            config = PagingConfig(pageSize = 10, enablePlaceholders = false),
-            pagingSourceFactory = { PersonPagingSource(PersonCallDb()) }
+            config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = {
+                PersonPagingSource(
+                    PersonCallDb(),
+                    "Aqui vao outros parametros caso necessarios, string query, filter, anyway "
+                )
+            }
         ).flow
     }
 }

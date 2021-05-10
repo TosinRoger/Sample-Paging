@@ -1,17 +1,15 @@
 package br.com.tosin.samplepaging.ui.main
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import br.com.tosin.samplepaging.R
 import br.com.tosin.samplepaging.databinding.MainFragmentBinding
 import br.com.tosin.samplepaging.ui.main.adapter.PersonAdapter
@@ -58,7 +56,21 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         configObserver()
         configView()
 
-        loadNextPage()
+        job?.cancel()
+        job = lifecycleScope.launch {
+            viewModel.loadListPerson().collectLatest {
+                mAdapter.submitData(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            mAdapter.loadStateFlow
+                // Only emit when REFRESH LoadState for RemoteMediator changes.
+                .distinctUntilChangedBy { it.refresh }
+                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
+                .filter { it.refresh is LoadState.NotLoading }
+                .collect { _binding?.recyclerViewPerson?.scrollToPosition(0) }
+        }
     }
 
     private fun configView() {
@@ -70,43 +82,10 @@ class MainFragment : Fragment(R.layout.main_fragment) {
             adapter = mAdapter
             addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         }
-
-        val layoutManager = binding.recyclerViewPerson.layoutManager as LinearLayoutManager
-        _binding?.recyclerViewPerson?.addOnScrollListener(object : OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val totalItemCount = layoutManager.itemCount
-                val visibleItemCount = layoutManager.childCount
-                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-
-                viewModel.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
-            }
-        })
-
-        job?.cancel()
-        job = lifecycleScope.launch {
-            viewModel.loadPage().collectLatest {
-                mAdapter.submitData(it)
-            }
-        }
-
-        lifecycleScope.launch {
-            mAdapter.loadStateFlow
-                // Only emit when REFRESH LoadState for RemoteMediator changes.
-                .distinctUntilChangedBy { it.refresh }
-                // Only react to cases where Remote REFRESH completes i.e., NotLoading.
-                .filter { it.refresh is LoadState.NotLoading  }
-                .collect { _binding?.recyclerViewPerson?.scrollToPosition(0) }
-        }
     }
 
     private fun configObserver() {
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-
-        viewModel
-    }
-
-    private fun loadNextPage() {
-
+        viewModel = ViewModelProvider(this)
+            .get(MainViewModel::class.java)
     }
 }

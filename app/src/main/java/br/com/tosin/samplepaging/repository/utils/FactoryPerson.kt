@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 object FactoryPerson {
 
-    private const val itemsInPage = 10
+    private const val itemsInPage = 20
 
     fun createListPerson(page: Int? = 0): List<Person> {
         val list = mutableListOf<Person>()
@@ -26,7 +26,7 @@ object FactoryPerson {
         return list
     }
 
-    val fullNameList = listOf(
+    private val fullNameList = listOf(
         "Heaven Miranda",
         "Kobe Lambert",
         "Jamie May",

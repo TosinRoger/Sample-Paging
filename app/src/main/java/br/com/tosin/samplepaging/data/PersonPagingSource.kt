@@ -8,7 +8,8 @@ import br.com.tosin.samplepaging.repository.PersonCallDb
 private const val STARTING_PAGE_INDEX = 0
 
 class PersonPagingSource(
-    private val service: PersonCallDb
+    private val service: PersonCallDb,
+    private val otherParams: String
 ) : PagingSource<Int, Person>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Person> {
@@ -20,7 +21,7 @@ class PersonPagingSource(
         val nextKey = if (response.isEmpty()) {
             null
         } else {
-            position + 10
+            position + 1
         }
         return LoadResult.Page(
             data = response,
