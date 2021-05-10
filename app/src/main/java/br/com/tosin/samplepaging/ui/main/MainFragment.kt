@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.tosin.samplepaging.R
 import br.com.tosin.samplepaging.databinding.MainFragmentBinding
+import br.com.tosin.samplepaging.ui.loadstate.LoadStateFooterAdapter
 import br.com.tosin.samplepaging.ui.main.adapter.PersonAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -75,11 +76,15 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
     private fun configView() {
         mAdapter = PersonAdapter()
+        val concatAdapter = mAdapter.withLoadStateHeaderAndFooter(
+            header = LoadStateFooterAdapter(),
+            footer = LoadStateFooterAdapter()
+        )
 
         _binding?.recyclerViewPerson?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = mAdapter
+            adapter = concatAdapter
             addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         }
     }

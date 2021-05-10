@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import br.com.tosin.samplepaging.model.Person
 import br.com.tosin.samplepaging.repository.PersonCallDb
+import kotlinx.coroutines.delay
 
 private const val STARTING_PAGE_INDEX = 0
 
@@ -18,6 +19,8 @@ class PersonPagingSource(
          */
         val position = params.key ?: STARTING_PAGE_INDEX
         val response = service.fetchPersonByPage(position)
+        // simulate low request
+        delay(2000)
         val nextKey = if (response.isEmpty()) {
             null
         } else {
