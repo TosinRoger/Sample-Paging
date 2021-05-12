@@ -39,10 +39,11 @@ class PersonAdapter: PagingDataAdapter<Person, PersonViewHolder>(diffCallback) {
     }
 
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
-        val person = getItem(position)
-
-        holder.index.text = person?.id.toString()
-        holder.fullName.text = person?.fullName.toString()
-        holder.age.text = person?.age.toString()
+        val aux = getItem(position)
+        aux?.let { person ->
+            holder.index.text = person.id.toString()
+            holder.fullName.text = person.fullName
+            holder.age.text = person.age.toString()
+        }
     }
 }

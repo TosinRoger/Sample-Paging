@@ -10,14 +10,7 @@ class MainViewModel: ViewModel() {
 
     private val repository: PersonLocalRepository = PersonLocalRepository()
 
-    private var page = 0
-    private var currentListPerson: Flow<PagingData<Person>>? = null
-
     fun loadListPerson(): Flow<PagingData<Person>> {
-        val result = repository.fetchPersonByPage()
-        currentListPerson = result
-        page++
-
-        return result
+        return repository.fetchPersonByPage()
     }
 }
